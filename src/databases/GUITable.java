@@ -42,14 +42,6 @@ public class GUITable extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
-            }
-        ));
         jScrollPane1.setViewportView(jTable1);
 
         jButton2.setText("Add New Customer");
@@ -219,7 +211,7 @@ public class GUITable extends javax.swing.JFrame {
                 rs.next();
             }
 
-            //This sets up our new tableModel (This is copied by right clicking on Jtable and clicking customise code
+            //This sets up our new tableModel (This is copied by right clicking on Jtable and clicking customise code)
             jTable1.setModel(new javax.swing.table.DefaultTableModel(
                     rows,
                     columns
