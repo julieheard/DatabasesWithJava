@@ -206,17 +206,15 @@ public class GUITable extends javax.swing.JFrame {
         try {
             //find userid for that row
             int SelectedID = (int) jTable1.getValueAt(jTable1.getSelectedRow(), 0);
-            //Delete from table where customerId == that ID
+           
             Connection con = DriverManager.getConnection("jdbc:derby://localhost:1527/OrdersDatabase", "julie", "password");//Connects to my OrdersDatabase
-
-            //Change results set to be scrollable (otherwise you cant get individual elements)
             Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
-            //insert a record
+            //Delete from table where customerId == that ID
             String SQL = "DELETE FROM TBL_CUSTOMERS WHERE CUSTOMERID = " + SelectedID;
             stmt.executeUpdate(SQL);
 
-            //view customers table
+            //Refresh Customers table on screen
             SQL = "SELECT * FROM TBL_CUSTOMERS";
             ResultSet rs = stmt.executeQuery(SQL);
 
