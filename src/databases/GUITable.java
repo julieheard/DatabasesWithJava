@@ -15,6 +15,7 @@ public class GUITable extends javax.swing.JFrame {
         jTextField1.setVisible(false);
         jTextField2.setVisible(false);
         AddCustomerButton.setVisible(false);
+        DeleteButton.setVisible(false);
 
     }
 
@@ -192,7 +193,7 @@ public class GUITable extends javax.swing.JFrame {
             jTextField1.setVisible(false);
             jTextField2.setVisible(false);
             AddCustomerButton.setVisible(false);
-            DeleteButton.setVisible(true);
+            DeleteButton.setVisible(false);
         }
 
     }//GEN-LAST:event_ViewButtonActionPerformed
@@ -206,7 +207,7 @@ public class GUITable extends javax.swing.JFrame {
         try {
             //find userid for that row
             int SelectedID = (int) jTable1.getValueAt(jTable1.getSelectedRow(), 0);
-           
+
             Connection con = DriverManager.getConnection("jdbc:derby://localhost:1527/OrdersDatabase", "julie", "password");//Connects to my OrdersDatabase
             Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
@@ -219,9 +220,12 @@ public class GUITable extends javax.swing.JFrame {
             ResultSet rs = stmt.executeQuery(SQL);
 
             UpdateTableWithResultSet(rs);
+
+            //Housekeeping
             rs.close();
             con.close();
             stmt.close();
+
         } catch (Exception e) {
             System.out.println(e);
         }
