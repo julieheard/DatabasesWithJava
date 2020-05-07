@@ -22,7 +22,6 @@ public class GUISingle extends javax.swing.JFrame {
 
     public GUISingle() {
         initComponents();
-        System.out.println(id);
     }
 
     /**

@@ -5,18 +5,17 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import javax.swing.table.DefaultTableModel;
 
 public class GUITable extends javax.swing.JFrame {
 
     public GUITable() {
         initComponents();
-        
+
         //Hides fields for adding new customer
         jTextField1.setVisible(false);
         jTextField2.setVisible(false);
-        jButton2.setVisible(false);
-       
+        AddCustomerButton.setVisible(false);
+
     }
 
     /**
@@ -32,11 +31,12 @@ public class GUITable extends javax.swing.JFrame {
         jEditorPane1 = new javax.swing.JEditorPane();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jButton2 = new javax.swing.JButton();
+        AddCustomerButton = new javax.swing.JButton();
         jTextField1 = new javax.swing.JTextField();
         jTextField2 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        ViewButton = new javax.swing.JButton();
+        TableSelectComboBox = new javax.swing.JComboBox<>();
+        DeleteButton = new javax.swing.JButton();
 
         jScrollPane2.setViewportView(jEditorPane1);
 
@@ -44,10 +44,10 @@ public class GUITable extends javax.swing.JFrame {
 
         jScrollPane1.setViewportView(jTable1);
 
-        jButton2.setText("Add New Customer");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        AddCustomerButton.setText("Add New Customer");
+        AddCustomerButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                AddCustomerButtonActionPerformed(evt);
             }
         });
 
@@ -55,17 +55,24 @@ public class GUITable extends javax.swing.JFrame {
 
         jTextField2.setText("jTextField2");
 
-        jButton1.setText("View Data");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        ViewButton.setText("View Data");
+        ViewButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                ViewButtonActionPerformed(evt);
             }
         });
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Customers", "Products", "Order2ProductLink", "Orders" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+        TableSelectComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Customers", "Products", "Order2ProductLink", "Orders" }));
+        TableSelectComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
+                TableSelectComboBoxActionPerformed(evt);
+            }
+        });
+
+        DeleteButton.setText("Delete Selected");
+        DeleteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DeleteButtonActionPerformed(evt);
             }
         });
 
@@ -79,43 +86,48 @@ public class GUITable extends javax.swing.JFrame {
                         .addGap(23, 23, 23)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jTextField2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton2))))
+                                .addComponent(AddCustomerButton)))
+                        .addGap(26, 26, 26)
+                        .addComponent(DeleteButton, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(73, 73, 73)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(TableSelectComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton1)))
-                .addContainerGap(22, Short.MAX_VALUE))
+                        .addComponent(ViewButton)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(38, 38, 38)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(ViewButton)
+                    .addComponent(TableSelectComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(DeleteButton))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
+                    .addComponent(AddCustomerButton)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addContainerGap(55, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void AddCustomerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddCustomerButtonActionPerformed
 
         try {
-            
+
             Connection con = DriverManager.getConnection("jdbc:derby://localhost:1527/OrdersDatabase", "julie", "password");//Connects to my OrdersDatabase
 
             //Change results set to be scrollable (otherwise you cant get individual elements)
@@ -128,7 +140,7 @@ public class GUITable extends javax.swing.JFrame {
             //get value for max value in primary key column, add one to it. To be used for new primary key.
             rs.next();
             int id = rs.getInt("maxID") + 1;
-            
+
             //insert a record
             SQL = "insert into TBL_Customers Values (" + id + ", '" + jTextField1.getText() + "', '" + jTextField2.getText() + "')";
             stmt.executeUpdate(SQL);
@@ -146,18 +158,18 @@ public class GUITable extends javax.swing.JFrame {
         }
 
 
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_AddCustomerButtonActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void ViewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewButtonActionPerformed
         try {
             Connection con = DriverManager.getConnection("jdbc:derby://localhost:1527/OrdersDatabase", "julie", "password");//************************** Start here
 
             //Change results set to be scrollable (otherwise you cant get last element)
-            Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE); 
+            Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
             //Before you do this step, make a new combo box and customise code to type in table names
             //gets all records for selected table
-            String SQL = "SELECT * FROM TBL_" + jComboBox1.getSelectedItem();
+            String SQL = "SELECT * FROM TBL_" + TableSelectComboBox.getSelectedItem();
             ResultSet rs = stmt.executeQuery(SQL);
 
             UpdateTableWithResultSet(rs);//Sends result set to UpdateTableWithResultSet() method
@@ -171,21 +183,53 @@ public class GUITable extends javax.swing.JFrame {
             System.out.println(e);
         }
 
-        if (jComboBox1.getSelectedItem().equals("Customers")) {
+        if (TableSelectComboBox.getSelectedItem().equals("Customers")) {
             jTextField1.setVisible(true);
             jTextField2.setVisible(true);
-            jButton2.setVisible(true);
+            AddCustomerButton.setVisible(true);
+            DeleteButton.setVisible(true);
         } else {
             jTextField1.setVisible(false);
             jTextField2.setVisible(false);
-            jButton2.setVisible(false);
+            AddCustomerButton.setVisible(false);
+            DeleteButton.setVisible(true);
         }
 
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_ViewButtonActionPerformed
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+    private void TableSelectComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TableSelectComboBoxActionPerformed
+
+    }//GEN-LAST:event_TableSelectComboBoxActionPerformed
+
+    private void DeleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteButtonActionPerformed
+
+        try {
+            //find userid for that row
+            int SelectedID = (int) jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            //Delete from table where customerId == that ID
+            Connection con = DriverManager.getConnection("jdbc:derby://localhost:1527/OrdersDatabase", "julie", "password");//Connects to my OrdersDatabase
+
+            //Change results set to be scrollable (otherwise you cant get individual elements)
+            Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+            //insert a record
+            String SQL = "DELETE FROM TBL_CUSTOMERS WHERE CUSTOMERID = " + SelectedID;
+            stmt.executeUpdate(SQL);
+
+            //view customers table
+            SQL = "SELECT * FROM TBL_CUSTOMERS";
+            ResultSet rs = stmt.executeQuery(SQL);
+
+            UpdateTableWithResultSet(rs);
+            rs.close();
+            con.close();
+            stmt.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+
+    }//GEN-LAST:event_DeleteButtonActionPerformed
 
     public void UpdateTableWithResultSet(ResultSet rs) {
         try {
@@ -199,7 +243,7 @@ public class GUITable extends javax.swing.JFrame {
 
             rs.last(); //Moves cursor to last element in result set, so we can get the number of rows in database
             int totalrows = rs.getRow();
-            
+
             rs.first(); //moves cursor back to first row in database
 
             Object[][] rows = new Object[totalrows][columns.length];//2D object array used for tableModel
@@ -216,9 +260,8 @@ public class GUITable extends javax.swing.JFrame {
                     rows,
                     columns
             ));
-            
-            jTable1.setEnabled(false); //This makes the table so you can't click on it
 
+            //jTable1.setEnabled(false); //This makes the table so you can't click on it
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -261,9 +304,10 @@ public class GUITable extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JButton AddCustomerButton;
+    private javax.swing.JButton DeleteButton;
+    private javax.swing.JComboBox<String> TableSelectComboBox;
+    private javax.swing.JButton ViewButton;
     private javax.swing.JEditorPane jEditorPane1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
