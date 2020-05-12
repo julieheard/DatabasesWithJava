@@ -16,7 +16,6 @@ public class GUITable extends javax.swing.JFrame {
         jTextField2.setVisible(false);
         AddCustomerButton.setVisible(false);
         DeleteButton.setVisible(false);
-
     }
 
     /**
@@ -51,10 +50,6 @@ public class GUITable extends javax.swing.JFrame {
                 AddCustomerButtonActionPerformed(evt);
             }
         });
-
-        jTextField1.setText("jTextField1");
-
-        jTextField2.setText("jTextField2");
 
         ViewButton.setText("View Data");
         ViewButton.addActionListener(new java.awt.event.ActionListener() {
@@ -93,15 +88,14 @@ public class GUITable extends javax.swing.JFrame {
                                 .addComponent(jTextField2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(AddCustomerButton)))
-                        .addGap(26, 26, 26)
+                        .addGap(18, 18, 18)
                         .addComponent(DeleteButton, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(73, 73, 73)
                         .addComponent(TableSelectComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(ViewButton)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addComponent(ViewButton)))
+                .addGap(18, 18, 18))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -146,43 +140,23 @@ public class GUITable extends javax.swing.JFrame {
             SQL = "insert into TBL_Customers Values (" + id + ", '" + jTextField1.getText() + "', '" + jTextField2.getText() + "')";
             stmt.executeUpdate(SQL);
 
-            SQL = "SELECT * FROM TBL_Customers";
-            rs = stmt.executeQuery(SQL);
-
-            UpdateTableWithResultSet(rs);
             rs.close();
             con.close();
             stmt.close();
 
-        } catch (Exception e) {
+            //Refresh table data
+            UpdateTableData();
 
+        } catch (Exception e) {
+            System.out.println(e);
         }
 
 
     }//GEN-LAST:event_AddCustomerButtonActionPerformed
 
     private void ViewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewButtonActionPerformed
-        try {
-            Connection con = DriverManager.getConnection("jdbc:derby://localhost:1527/OrdersDatabase", "julie", "password");//************************** Start here
 
-            //Change results set to be scrollable (otherwise you cant get last element)
-            Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-
-            //Before you do this step, make a new combo box and customise code to type in table names
-            //gets all records for selected table
-            String SQL = "SELECT * FROM TBL_" + TableSelectComboBox.getSelectedItem();
-            ResultSet rs = stmt.executeQuery(SQL);
-
-            UpdateTableWithResultSet(rs);//Sends result set to UpdateTableWithResultSet() method
-
-            //Housekeeping
-            rs.close();
-            con.close();
-            stmt.close();
-
-        } catch (SQLException e) {
-            System.out.println(e);
-        }
+        UpdateTableData();//Refreshes table with data
 
         if (TableSelectComboBox.getSelectedItem().equals("Customers")) {
             jTextField1.setVisible(true);
@@ -203,38 +177,43 @@ public class GUITable extends javax.swing.JFrame {
     }//GEN-LAST:event_TableSelectComboBoxActionPerformed
 
     private void DeleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteButtonActionPerformed
-
         try {
-            //find userid for that row
-            int SelectedID = (int) jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+            int SelectedID = (int) jTable1.getValueAt(jTable1.getSelectedRow(), 0); //Gets the primary key for the record currently selected (primary key in column 0)
+            try {
 
-            Connection con = DriverManager.getConnection("jdbc:derby://localhost:1527/OrdersDatabase", "julie", "password");//Connects to my OrdersDatabase
-            Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                Connection con = DriverManager.getConnection("jdbc:derby://localhost:1527/OrdersDatabase", "julie", "password");//Connects to my OrdersDatabase
 
-            //Delete from table where customerId == that ID
-            String SQL = "DELETE FROM TBL_CUSTOMERS WHERE CUSTOMERID = " + SelectedID;
-            stmt.executeUpdate(SQL);
+                //Change results set to be scrollable (otherwise you cant get individual elements)
+                Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
-            //Refresh Customers table on screen
-            SQL = "SELECT * FROM TBL_CUSTOMERS";
-            ResultSet rs = stmt.executeQuery(SQL);
+                //insert a record
+                String SQL = "DELETE FROM TBL_CUSTOMERS WHERE CustomerID = " + SelectedID;
+                stmt.executeUpdate(SQL);
 
-            UpdateTableWithResultSet(rs);
+                //Housekeeping
+                con.close();
+                stmt.close();
 
-            //Housekeeping
-            rs.close();
-            con.close();
-            stmt.close();
+                //Refresh table with new data
+                UpdateTableData();
 
+            } catch (Exception e) {
+                System.out.println(e);
+            }
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println("No record selected");
         }
-
 
     }//GEN-LAST:event_DeleteButtonActionPerformed
 
-    public void UpdateTableWithResultSet(ResultSet rs) {
+    public void UpdateTableData() {
         try {
+
+            Connection con = DriverManager.getConnection("jdbc:derby://localhost:1527/OrdersDatabase", "julie", "password");//Connects to my OrdersDatabase
+            Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE); //Change results set to be scrollable (otherwise you cant get individual elements)
+
+            String SQL = "SELECT * FROM TBL_" + TableSelectComboBox.getSelectedItem(); // selects all records for table currently selected in combo box
+            ResultSet rs = stmt.executeQuery(SQL);
 
             String[] columns = new String[rs.getMetaData().getColumnCount()];//Gets how many columns are in the table
 
@@ -263,15 +242,17 @@ public class GUITable extends javax.swing.JFrame {
                     columns
             ));
 
+            //Housekeeping
+            rs.close();
+            con.close();
+            stmt.close();
+
             //jTable1.setEnabled(false); //This makes the table so you can't click on it
         } catch (Exception e) {
             System.out.println(e);
         }
     }
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
